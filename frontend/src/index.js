@@ -14,7 +14,9 @@ root.render(
   <React.StrictMode>
     <CssBaseline />
     <ThemeProvider theme={theme}>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>
 );
