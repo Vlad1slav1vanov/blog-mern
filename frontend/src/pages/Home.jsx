@@ -13,7 +13,7 @@ export const Home = () => {
   const dispatch = useDispatch();
   const { posts, tags } = useSelector(state => state.posts);
   const isPostsLoading = posts.status === 'loading';
-  const items = isPostsLoading ? [...Array(5)] : posts.items.data;
+  const items = isPostsLoading ? [...Array(5)] : posts.items;
 
   const isTagsLoading = tags.status === 'loading';
 
@@ -49,7 +49,7 @@ export const Home = () => {
          )}
         </Grid>
         <Grid xs={4} item>
-          <TagsBlock items={tags.items.data} isLoading={isTagsLoading} />
+          <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
             items={[
               {
