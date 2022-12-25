@@ -6,7 +6,7 @@ import App from "./App";
 import CssBaseline from "@mui/material/CssBaseline";
 
 import "./index.scss";
-import { ThemeProvider } from "@mui/material";
+import { Paper, ThemeProvider } from "@mui/material";
 import { theme } from "./theme";
 import store from "./redux/store";
 
@@ -16,11 +16,13 @@ root.render(
   <>
     <CssBaseline />
       <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          <Provider store={store}>
-            <App />
-          </Provider>
-        </BrowserRouter>
+        <Paper elevation={1}>
+          <BrowserRouter>
+            <Provider store={store}>
+              <App />
+            </Provider>
+          </BrowserRouter>
+        </Paper>
       </ThemeProvider>
   </>
 );
