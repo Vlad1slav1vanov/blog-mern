@@ -6,7 +6,6 @@ import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import {useForm} from "react-hook-form";
-
 import styles from "./Login.module.scss";
 import { fetchAuth, selectIsAuth } from "../../redux/slices/auth";
 
@@ -73,6 +72,7 @@ export const Login = () => {
         size="large" 
         variant="contained" 
         fullWidth
+        disabled={!isValid}
         >
           Войти
         </Button>
