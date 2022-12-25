@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
 import {UserController, PostController} from './controllers/index.js';
@@ -17,17 +18,20 @@ const app = express();
 
 const storage = multer.diskStorage({
   destination: (_, __, cb) => {
-    cb(null, 'uploads')
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads');
+    }
+    cb(null, 'uploads');
   },
   filename: (_, file, cb) => {
-    cb(null, file.originalname)
+    cb(null, file.originalname);
   },
 });
 
 const upload = multer({storage});
 
 app.use(express.json())
-app.use('/upload', express.static('uploads'))
+app.use('/uploads', express.static('uploads'))
 app.use(cors());
 
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
@@ -36,9 +40,9 @@ app.get('/auth/me', checkAuth, UserController.getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
-    url: `/uploads/${req.file.originalname}`
-  })
-})
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
