@@ -14,6 +14,10 @@ export const AddPost = () => {
   const imageUrl = '';
   const isAuth = useSelector(selectIsAuth)
   const [value, setValue] = React.useState('');
+  const [title, setTitle] = React.useState('');
+  const [tags, setTags] = React.useState('');
+
+  const inputFileRef = React.useRef(null);
 
   const handleChangeFile = () => {};
 
@@ -47,7 +51,7 @@ export const AddPost = () => {
       <Button variant="outlined" size="large">
         Загрузить превью
       </Button>
-      <input type="file" onChange={handleChangeFile} hidden />
+      <input ref={inputFileRef} type="file" onChange={handleChangeFile} hidden />
       {imageUrl && (
         <Button variant="contained" color="error" onClick={onClickRemoveImage}>
           Удалить
@@ -62,9 +66,18 @@ export const AddPost = () => {
         classes={{ root: styles.title }}
         variant="standard"
         placeholder="Заголовок статьи..."
+        value={title}
+        onChange={evt => setTitle(evt.target.value)}
         fullWidth
       />
-      <TextField classes={{ root: styles.tags }} variant="standard" placeholder="Тэги" fullWidth />
+      <TextField 
+      classes={{ root: styles.tags }} 
+      variant="standard" 
+      placeholder="Тэги" 
+      fullWidth 
+      value={tags}
+      onChange={evt => setTags(evt.target.value)}
+      />
       <SimpleMDE className={styles.editor} value={value} onChange={onChange} options={options} />
       <div className={styles.buttons}>
         <Button size="large" variant="contained">
