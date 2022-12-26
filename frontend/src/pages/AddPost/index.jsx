@@ -1,7 +1,7 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
 import { selectIsAuth } from "../../redux/slices/auth";
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useParams } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
@@ -12,6 +12,7 @@ import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 
 export const AddPost = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
   const isAuth = useSelector(selectIsAuth);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -19,6 +20,7 @@ export const AddPost = () => {
   const [title, setTitle] = React.useState('');
   const [tags, setTags] = React.useState('');
   const [imageUrl, setImageUrl] = React.useState('');
+  const isEditing = Boolean(id);
 
   const inputFileRef = React.useRef(null);
 
@@ -49,12 +51,16 @@ export const AddPost = () => {
         imageUrl,
         text,
         tags
-
       }
 
-      const {data} = await axios.post('/posts', fields);
-      const id = data._id;
-      navigate(`/posts/${id}`)
+      const {data} = isEditing 
+      ? 
+      await axios.patch(`/posts/${id}`, fields) 
+      : 
+      await axios.post('/posts', fields)
+
+      const _id = isEditing ? id : data._id;
+      navigate(`/posts/${_id}`)
     } catch (err) {
       console.warn(err);
       alert('Ошибка при создании статьи!');
@@ -80,6 +86,23 @@ export const AddPost = () => {
     }),
     [],
   );
+
+  React.useEffect(() => {
+    if (id) {
+      axios.get(`/posts/${id}`)
+        .then(({data}) => {
+          setTitle(data.title)
+          setTags(data.tags)
+          setText(data.text)
+          setImageUrl(data.imageUrl)
+        })
+        .catch(err => {
+          console.warn(err)
+          alert('Ошибка при получении статьи')
+        })
+
+    }
+  }, [])
 
   if (window.localStorage.getItem('token') && !isAuth) {
     return <Navigate to='/' />
@@ -141,7 +164,7 @@ export const AddPost = () => {
         size="large" 
         variant="contained"
         >
-          Опубликовать
+          {isEditing ? 'Сохранить' : 'Опубликовать'}
         </Button>
         <a href="/">
           <Button size="large">Отмена</Button>
