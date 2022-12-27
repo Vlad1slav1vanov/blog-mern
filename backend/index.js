@@ -37,6 +37,7 @@ app.use(cors());
 app.post('/auth/login', loginValidation, handleValidationErrors, UserController.login);
 app.post('/auth/register', registerValidation, handleValidationErrors, UserController.register);
 app.get('/auth/me', checkAuth, UserController.getMe);
+app.get('/users/:id', UserController.getMe);
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   res.json({
@@ -52,7 +53,9 @@ app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, Post
 app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
-app.post('/:postId/comments', checkAuth, commentCreateValidation, CommentController.create);
+app.post('/:postId/comments', commentCreateValidation, CommentController.create);
+app.get('/comments', CommentController.getAll);
+
 
 app.listen(9000, (err) => {
   if (err) {
