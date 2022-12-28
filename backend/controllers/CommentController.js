@@ -51,6 +51,33 @@ export const create = async (req, res) => {
   }
 };
 
+export const getComments = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const post = await PostModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({
+        success: false,
+        error: 'Пост не найден',
+      });
+    }
+
+    const comments = await CommentModel.find({ post: postId }).populate('user', '-passwordHash -email');
+
+    res.status(200).json({
+      success: true,
+      data: comments,
+    });
+  } catch (err) {
+    res.status(400).json({
+      success: false,
+      error: err.message,
+    });
+  }
+};
+
+
 export const getAll = async (req, res) => {
   try {
     const comments = await CommentModel.find();
