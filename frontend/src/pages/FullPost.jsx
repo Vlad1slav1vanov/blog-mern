@@ -1,18 +1,19 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+
 import ReactMarkdown from "react-markdown";
 
 import { Post } from "../components/Post";
 import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
-import { fetchComments } from "../redux/slices/posts";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
   const [comments, setComments] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
+  const userData = useSelector((state) => state.auth.data);
   const {id} = useParams();
 
   const getFullPost = () => {
@@ -70,7 +71,11 @@ export const FullPost = () => {
         items={comments}
         isLoading={false}
       >
-        <Index />
+        <Index 
+        postId={id} 
+        getComments={getComments}
+        userData={userData} 
+        />
       </CommentsBlock>
     </>
   );

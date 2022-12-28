@@ -15,11 +15,6 @@ export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (
   axios.delete(`/posts/${id}`)
 );
 
-export const fetchComments = createAsyncThunk('posts/fetchComments', async (id) => {
-  const response = await axios.get(`/${id}/comments`);
-  return response.data;
-})
-
 
 
 const initialState = {
@@ -31,10 +26,6 @@ const initialState = {
     items: [],
     status: 'loading',
   },
-  comments: {
-    items: [],
-    status: 'loading'
-  }
 };
 
 const postsSlice = createSlice({
@@ -71,18 +62,6 @@ const postsSlice = createSlice({
     // удаление статей
     [fetchRemovePost.pending]: (state, action) => {
       state.posts.items = state.posts.items.filter((obj) => obj._id !== action.meta.arg);
-    },
-    [fetchComments.pending]: (state) => {
-      state.comments.items = [];
-      state.comments.status = 'loading';
-    },
-    [fetchComments.fulfilled]: (state, action) => {
-      state.comments.items = action.payload;
-      state.comments.status = 'loaded';
-    },
-    [fetchComments.rejected]: (state) => {
-      state.comments.items = [];
-      state.comments.status = 'error';
     },
   }
 });
