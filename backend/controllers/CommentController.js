@@ -80,7 +80,7 @@ export const getComments = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const comments = await CommentModel.find();
+    const comments = await CommentModel.find().populate('user', '-passwordHash -email');
 
     res.status(200).json({
       success: true,

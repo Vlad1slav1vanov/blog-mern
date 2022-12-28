@@ -8,6 +8,7 @@ import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
 import { fetchPosts, fetchTags } from '../redux/slices/posts';
+import axios from '../axios';
 
 export const Home = () => {
   const dispatch = useDispatch();
@@ -15,12 +16,23 @@ export const Home = () => {
   const userData = useSelector((state) => state.auth.data);
   const isPostsLoading = posts.status === 'loading';
   const items = isPostsLoading ? [...Array(5)] : posts.items;
+  const [comments, setComments] = React.useState([])
 
   const isTagsLoading = tags.status === 'loading';
+
+  const getComments = async () => {
+    try {
+      const response = await (await axios.get('/comments')).data.data
+      setComments(response)
+    } catch (err) {
+      alert('Не удалось загрузить список комментариев')
+    }
+  }
 
   React.useEffect(() => {
     dispatch(fetchPosts())
     dispatch(fetchTags())
+    getComments()
   }, [])
 
   return (
@@ -53,22 +65,7 @@ export const Home = () => {
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
           <CommentsBlock
-            items={[
-              {
-                user: {
-                  fullName: 'Вася Пупкин',
-                  avatarUrl: 'https://mui.com/static/images/avatar/1.jpg',
-                },
-                text: 'Это тестовый комментарий',
-              },
-              {
-                user: {
-                  fullName: 'Иван Иванов',
-                  avatarUrl: 'https://mui.com/static/images/avatar/2.jpg',
-                },
-                text: 'When displaying three lines or more, the avatar is not aligned at the top. You should set the prop to align the avatar at the top',
-              },
-            ]}
+            items={comments}
             isLoading={false}
           />
         </Grid>
