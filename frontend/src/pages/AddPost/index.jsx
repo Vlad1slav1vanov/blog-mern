@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import SimpleMDE from 'react-simplemde-editor';
 import axios from '../../axios';
 
+
 import 'easymde/dist/easymde.min.css';
 import styles from './AddPost.module.scss';
 
@@ -18,11 +19,25 @@ export const AddPost = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [text, setText] = React.useState('');
   const [title, setTitle] = React.useState('');
-  const [tags, setTags] = React.useState('');
+
+  const [hashtags, setHashtags] = React.useState('');
+  const [validError, setValidError] = React.useState(false);
+
   const [imageUrl, setImageUrl] = React.useState('');
   const isEditing = Boolean(id);
-
   const inputFileRef = React.useRef(null);
+
+  const sliceIntoHashtags = (str) => {
+    const hashtagRegex = /#[a-zA-Zа-яА-Я0-9]+/g;
+    return str.match(hashtagRegex) || [];
+  }
+
+  const handleChangeTags = (event) => {
+    const hashtagRegex = /^\s*(#[a-zA-Zа-яА-Я0-9]*\s*)*\s*$/;
+    const inputValue = event.target.value;
+    setHashtags(inputValue);
+    setValidError(inputValue.trim() !== '' && !hashtagRegex.test(inputValue));
+  };
 
   const handleChangeFile = async (evt) => {
     try {
@@ -44,6 +59,7 @@ export const AddPost = () => {
   const onSubmit = async () => {
     try {
       setIsLoading(true);
+      const tags = sliceIntoHashtags(hashtags)
 
       const fields = {
         title,
@@ -91,7 +107,7 @@ export const AddPost = () => {
       axios.get(`/posts/${id}`)
         .then(({data}) => {
           setTitle(data.title)
-          setTags(data.tags)
+          setHashtags(data.tags)
           setText(data.text)
           setImageUrl(data.imageUrl)
         })
@@ -145,12 +161,14 @@ export const AddPost = () => {
       fullWidth
       />
       <TextField 
-      classes={{ root: styles.tags }} 
+      classes={{ root: styles.tags }}
+      error={validError}
+      helperText={validError ? 'Хештеги начинаются с символа # и разделяются пробелами, посторонние символы недопустимы!' : ''} 
       variant="standard" 
       placeholder="Тэги" 
       fullWidth 
-      value={tags}
-      onChange={evt => setTags(evt.target.value)}
+      value={hashtags}
+      onChange={handleChangeTags}
       />
       <SimpleMDE
       className={styles.editor} 
@@ -163,6 +181,7 @@ export const AddPost = () => {
         onClick={onSubmit} 
         size="large" 
         variant="contained"
+        disabled={Boolean(validError)}
         >
           {isEditing ? 'Сохранить' : 'Опубликовать'}
         </Button>
