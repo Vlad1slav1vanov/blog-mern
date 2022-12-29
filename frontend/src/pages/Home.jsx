@@ -53,7 +53,7 @@ export const Home = () => {
               title={obj.title}
               imageUrl={obj.imageUrl ? `http://localhost:9000${obj.imageUrl}` : ''}
               user={obj.user}
-              createdAt={obj.createdAt}
+              createdAt={dayjs(obj.createdAt).format('DD.MM.YY, HH:mm')}
               viewsCount={obj.viewsCount}
               commentsCount={obj.commentsCount}
               tags={obj.tags}

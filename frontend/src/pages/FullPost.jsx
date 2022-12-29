@@ -8,6 +8,7 @@ import { Post } from "../components/Post";
 import { Index } from "../components/AddComment";
 import { CommentsBlock } from "../components/CommentsBlock";
 import axios from "../axios";
+import dayjs from "dayjs";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
@@ -57,7 +58,7 @@ export const FullPost = () => {
         title={data.title}
         imageUrl={data.imageUrl ? `http://localhost:9000${data.imageUrl}` : ''}
         user={data.user}
-        createdAt={data.createdAt}
+        createdAt={dayjs(data.createdAt).format('DD.MM.YY, HH:mm')}
         viewsCount={data.viewsCount}
         commentsCount={3}
         tags={data.tags}

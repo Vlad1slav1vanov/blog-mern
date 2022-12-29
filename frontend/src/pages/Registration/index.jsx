@@ -8,17 +8,32 @@ import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
 import { fetchRegister, selectIsAuth } from "../../redux/slices/auth";
 import { Navigate } from 'react-router-dom';
+import axios from '../../axios';
 
 import styles from './Login.module.scss';
 
 export const Registration = () => {
   const isAuth = useSelector(selectIsAuth);
   const dispatch = useDispatch();
+  const [imageUrl, setImageUrl] = React.useState('');
+  const fileInput = React.useRef(null);
+
+  const handleChangeFile = async (evt) => {
+    try {
+      const formData = new FormData();
+      const file = evt.target.files[0];
+      formData.append('image', file);
+      const {data} = await axios.post('/upload/avatar', formData);
+      setImageUrl(data.url);
+    } catch (err) {
+      console.warn(err);
+      alert('Ошибка при загрузке файла!');
+    }
+  };
 
   const { 
     register, 
     handleSubmit, 
-    setError, 
     formState: { 
       errors, 
       isValid 
@@ -27,12 +42,13 @@ export const Registration = () => {
       fullName: '',
       email: '',
       password: '',
+      avatarUrl: imageUrl,
     },
     mode: 'onChange',
   });
 
   const onSubmit = async (values) => {
-    const data = await dispatch(fetchRegister(values));
+    const data = await dispatch(fetchRegister({...values, avatarUrl: imageUrl}));
 
     if (!data.payload) {
       alert('Не удалось зарегистрироваться')
@@ -53,9 +69,31 @@ export const Registration = () => {
         Создание аккаунта
       </Typography>
       <div className={styles.avatar}>
-        <Avatar sx={{ width: 100, height: 100 }} />
+        <Avatar
+        src={imageUrl && `http://localhost:9000${imageUrl}`}
+        sx={{ width: 100, height: 100 }} 
+        />
+        <input
+        ref={fileInput}
+        type="file"
+        onChange={handleChangeFile}
+        hidden
+        />
+        <Button
+        width={100}
+        onClick={() => fileInput.current.click()}
+        >
+          Загрузить аватар
+        </Button>
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <input
+          type="text"
+          value={imageUrl}
+          onChange={(evt) => setImageUrl(evt.target.value)}
+          {...register('avatarUrl')}
+          hidden
+        />
         <TextField
         className={styles.field}
         label="Полное имя"
@@ -82,7 +120,13 @@ export const Registration = () => {
         {...register('password', {required: 'Укажите пароль'})}
         fullWidth 
         />
-        <Button disabled={!isValid} type='submit' size="large" variant="contained" fullWidth>
+        <Button 
+        disabled={!isValid} 
+        type='submit' 
+        size="large" 
+        variant="contained" 
+        fullWidth
+        >
           Зарегистрироваться
         </Button>
       </form>

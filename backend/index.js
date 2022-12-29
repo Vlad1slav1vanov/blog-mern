@@ -7,8 +7,6 @@ import {registerValidation, loginValidation, postCreateValidation, commentCreate
 import {UserController, PostController, CommentController} from './controllers/index.js';
 import {checkAuth, handleValidationErrors} from './utils/index.js';
 
-
-
 mongoose
   .connect('mongodb+srv://userblog:userblog1@cluster0.84kwvd0.mongodb.net/blog?retryWrites=true&w=majority')
   .then(() => console.log('DB OK'))
@@ -45,6 +43,12 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   });
 });
 
+app.post('/upload/avatar', upload.single('image'), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
+  });
+});
+
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
 app.get('/posts', PostController.getAll);
@@ -56,7 +60,6 @@ app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors,
 app.post('/:postId/comments', commentCreateValidation, CommentController.create);
 app.get('/comments', CommentController.getAll);
 app.get('/:postId/comments', CommentController.getComments)
-
 
 app.listen(9000, (err) => {
   if (err) {

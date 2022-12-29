@@ -27,7 +27,7 @@ export const Index = ({postId, getComments, userData}) => {
       <div className={styles.root}>
         <Avatar
           classes={{ root: styles.avatar }}
-          src={userData.avatar}
+          src={userData ? userData.avatar : ''}
         />
         <div className={styles.form}>
           <TextField
