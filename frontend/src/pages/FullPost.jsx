@@ -29,7 +29,7 @@ export const FullPost = () => {
     })
   }
 
-  const getComments = () => {
+  const getComments = async () => {
     axios.get(`/${id}/comments`)
     .then(res => {
       setComments(res.data.data)

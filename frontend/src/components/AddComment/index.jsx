@@ -27,7 +27,7 @@ export const Index = ({postId, getComments, userData}) => {
       <div className={styles.root}>
         <Avatar
           classes={{ root: styles.avatar }}
-          src={userData ? userData.avatar : ''}
+          src={userData ? `http://localhost:9000${userData.avatarUrl}` : ''}
         />
         <div className={styles.form}>
           <TextField
