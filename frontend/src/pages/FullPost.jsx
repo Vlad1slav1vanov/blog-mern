@@ -17,28 +17,27 @@ export const FullPost = () => {
   const userData = useSelector((state) => state.auth.data);
   const {id} = useParams();
 
-  const getFullPost = () => {
-    axios.get(`/posts/${id}`)
-    .then(res => {
-      setData(res.data)
-      setIsLoading(false)
-    })
-    .catch(err => {
-      console.warn(err)
-      alert('Ошибка при получении статьи')
-    })
-  }
-
   const getComments = async () => {
-    axios.get(`/${id}/comments`)
-    .then(res => {
-      setComments(res.data.data)
-    })
-    .catch(err => {
-      console.warn(err)
-      alert('Ошибка при получении комментариев')
-    })
-  }
+    try {
+      const response = await axios.get(`/${id}/comments`);
+      setComments([...response.data.data]);
+      console.log(comments);
+    } catch (err) {
+      console.warn(err);
+      alert('Ошибка при получении комментариев');
+    }
+  };
+
+  const getFullPost = async () => {
+    try {
+      const response = await axios.get(`/posts/${id}`);
+      setData(response.data);
+      setIsLoading(false);
+    } catch(err) {
+      console.warn(err);
+      alert('Ошибка при получении статьи');
+    }
+  };
 
   React.useEffect(() => {
     getFullPost()
@@ -60,7 +59,7 @@ export const FullPost = () => {
         user={data.user}
         createdAt={dayjs(data.createdAt).format('DD.MM.YY, HH:mm')}
         viewsCount={data.viewsCount}
-        commentsCount={3}
+        commentsCount={data.comments.length}
         tags={data.tags}
         isFullPost
       >

@@ -1,6 +1,7 @@
 import CommentModel from "../models/Comment.js";
 import jwt from "jsonwebtoken";
 import checkAuth from "../utils/checkAuth.js";
+import UserModel from "../models/User.js";
 import PostModel from "../models/Post.js";
 
 export const create = async (req, res) => {
@@ -16,59 +17,33 @@ export const create = async (req, res) => {
     const decoded = jwt.verify(token, 'secret123');
 
     const userId = decoded._id;
+    const userData = await UserModel.findById(userId);
 
-    const { postId } = req.params;
+    const {postId} = req.params
+    const {text} = req.body
+
     const post = await PostModel.findById(postId);
 
     if (!post) {
-      return res.status(404).json({
+      res.status(400).json({
         success: false,
-        error: 'Пост не найден',
-      });
-    }
-
-    const { text } = req.body;
-    const comment = new CommentModel({
+        message: 'Пост не найден!'
+      })
+    };
+   
+    const doc = new CommentModel({
       user: userId,
-      text,
       post: postId,
+      text,
     });
-    await comment.save();
 
-    post.comments.push(comment);
-
-    await post.save();
-
-    res.status(201).json({
-      success: true,
-      data: comment,
-    });
-  } catch (err) {
-    res.status(400).json({
-      success: false,
-      error: err.message,
-    });
-  }
-};
-
-export const getComments = async (req, res) => {
-  try {
-    const { postId } = req.params;
-    const post = await PostModel.findById(postId);
-
-    if (!post) {
-      return res.status(404).json({
-        success: false,
-        error: 'Пост не найден',
-      });
-    }
-
-    const comments = await CommentModel.find({ post: postId }).populate('user', '-passwordHash -email');
+    doc.save();
 
     res.status(200).json({
       success: true,
-      data: comments,
+      message: 'Комментарий добавлен',
     });
+
   } catch (err) {
     res.status(400).json({
       success: false,
@@ -76,7 +51,6 @@ export const getComments = async (req, res) => {
     });
   }
 };
-
 
 export const getAll = async (req, res) => {
   try {

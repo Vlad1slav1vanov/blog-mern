@@ -9,7 +9,8 @@ import Divider from "@mui/material/Divider";
 import List from "@mui/material/List";
 import Skeleton from "@mui/material/Skeleton";
 
-export const CommentsBlock = ({ items, children, isLoading = true }) => {
+export const CommentsBlock = ({ items, children, isLoading }) => {
+  console.log(items)
   return (
     <SideBlock title="Комментарии">
       <List>

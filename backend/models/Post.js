@@ -24,7 +24,7 @@ const PostSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    comments: [CommentSchema],
+    comments: [String],
     imageUrl: String
   }, 
   {
