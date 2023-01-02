@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { CommentSchema } from "./Comment.js";
 
 const PostSchema = new mongoose.Schema(
   {
