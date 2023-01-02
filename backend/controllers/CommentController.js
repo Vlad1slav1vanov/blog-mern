@@ -31,3 +31,29 @@ export const create = async (req, res) => {
     })
   }
 }
+
+export const getOnePost = async (req, res) => {
+  try {
+    const {postId} = req.params;
+    const post = await PostModel.findOne({_id: postId});
+
+    if (!post) {
+      res.status(404).json({
+        message: 'Пост не найден'
+      })
+    }
+
+    const comments = await CommentModel.find({post: postId}).populate('user', 'fullName avatarUrl')
+
+    res.status(200).json({
+      success: true,
+      comments: comments,
+    })
+
+  } catch (err) {
+    res.status(404).json({
+      success: false,
+      message: 'Пост не найден'
+    })
+  }
+}
