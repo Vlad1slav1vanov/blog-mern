@@ -28,8 +28,10 @@ export const AddPost = () => {
   const inputFileRef = React.useRef(null);
 
   const sliceIntoHashtags = (str) => {
-    const hashtagRegex = /#[a-zA-Zа-яА-Я0-9]+/g;
-    return str.match(hashtagRegex) || [];
+    if (typeof str === 'string') {
+      const hashtagRegex = /#[a-zA-Zа-яА-Я0-9]+/g;
+      return str.match(hashtagRegex) || [];
+    }
   }
 
   const handleChangeTags = (event) => {
@@ -78,6 +80,7 @@ export const AddPost = () => {
       navigate(`/posts/${_id}`)
     } catch (err) {
       console.warn(err);
+      console.log(err)
       alert('Ошибка при создании статьи!');
     }
   }

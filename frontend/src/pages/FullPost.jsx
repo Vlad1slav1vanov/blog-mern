@@ -21,7 +21,6 @@ export const FullPost = () => {
     try {
       const response = await axios.get(`/${id}/comments`);
       setComments([...response.data.data]);
-      console.log(comments);
     } catch (err) {
       console.warn(err);
       alert('Ошибка при получении комментариев');
@@ -41,7 +40,6 @@ export const FullPost = () => {
 
   React.useEffect(() => {
     getFullPost()
-    getComments()
   }, [])
 
   if (isLoading) {
@@ -59,7 +57,6 @@ export const FullPost = () => {
         user={data.user}
         createdAt={dayjs(data.createdAt).format('DD.MM.YY, HH:mm')}
         viewsCount={data.viewsCount}
-        commentsCount={data.comments.length}
         tags={data.tags}
         isFullPost
       >
@@ -67,7 +64,7 @@ export const FullPost = () => {
       children={data.text}
       />
       </Post>
-      <CommentsBlock
+      {/* <CommentsBlock
         items={comments}
         isLoading={false}
       >
@@ -76,7 +73,7 @@ export const FullPost = () => {
         getComments={getComments}
         userData={userData} 
         />
-      </CommentsBlock>
+      </CommentsBlock> */}
     </>
   );
 };
