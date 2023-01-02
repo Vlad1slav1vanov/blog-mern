@@ -47,13 +47,29 @@ export const getOnePost = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      comments: comments,
+      data: comments,
     })
 
   } catch (err) {
     res.status(404).json({
       success: false,
       message: 'Пост не найден'
+    })
+  }
+}
+
+export const getAll = async (req, res) => {
+  try {
+    const comments = await CommentModel.find().populate('user', 'fullName avatarUrl');
+
+    res.status(200).json({
+      success: true,
+      data: comments,
+    })
+  } catch (err) {
+    res.status(404).json({
+      success: false,
+      message: 'Комментарии не найдены'
     })
   }
 }

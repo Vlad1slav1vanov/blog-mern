@@ -32,6 +32,7 @@ export const Home = () => {
   React.useEffect(() => {
     dispatch(fetchPosts())
     dispatch(fetchTags())
+    getComments()
   }, [])
 
   return (
@@ -63,10 +64,10 @@ export const Home = () => {
         </Grid>
         <Grid xs={4} item>
           <TagsBlock items={tags.items} isLoading={isTagsLoading} />
-          {/* <CommentsBlock
+          <CommentsBlock
             items={comments}
             isLoading={false}
-          /> */}
+          />
         </Grid>
       </Grid>
     </>

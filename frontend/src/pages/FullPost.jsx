@@ -40,6 +40,7 @@ export const FullPost = () => {
 
   React.useEffect(() => {
     getFullPost()
+    getComments()
   }, [])
 
   if (isLoading) {
@@ -64,7 +65,7 @@ export const FullPost = () => {
       children={data.text}
       />
       </Post>
-      {/* <CommentsBlock
+      <CommentsBlock
         items={comments}
         isLoading={false}
       >
@@ -73,7 +74,7 @@ export const FullPost = () => {
         getComments={getComments}
         userData={userData} 
         />
-      </CommentsBlock> */}
+      </CommentsBlock>
     </>
   );
 };

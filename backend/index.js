@@ -59,6 +59,7 @@ app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors,
 
 app.post('/:postId/comments', checkAuth, CommentController.create);
 app.get('/:postId/comments', CommentController.getOnePost);
+app.get('/comments', CommentController.getAll);
 
 
 app.listen(9000, (err) => {
