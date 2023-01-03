@@ -28,7 +28,7 @@ export const TagsBlock = ({ items, isLoading = true }) => {
                 {isLoading ? (
                   <Skeleton width={100} />
                 ) : (
-                  <ListItemText primary={name.slice(1)} />
+                  <ListItemText primary={name} />
                 )}
               </ListItemButton>
             </ListItem>

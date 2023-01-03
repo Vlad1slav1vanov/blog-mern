@@ -29,13 +29,13 @@ export const AddPost = () => {
 
   const sliceIntoHashtags = (str) => {
     if (typeof str === 'string') {
-      const hashtagRegex = /#[a-zA-Zа-яА-Я0-9]+/g;
+      const hashtagRegex = /[a-zA-Zа-яА-Я0-9]+/g;
       return str.match(hashtagRegex) || [];
     }
   }
 
   const handleChangeTags = (event) => {
-    const hashtagRegex = /^\s*(#[a-zA-Zа-яА-Я0-9]*\s*)*\s*$/;
+    const hashtagRegex = /^\s*([a-zA-Zа-яА-Я0-9]*\s*)*\s*$/;
     const inputValue = event.target.value;
     setHashtags(inputValue);
     setValidError(inputValue.trim() !== '' && !hashtagRegex.test(inputValue));
@@ -166,7 +166,7 @@ export const AddPost = () => {
       <TextField 
       classes={{ root: styles.tags }}
       error={validError}
-      helperText={validError ? 'Хештеги начинаются с символа # и разделяются пробелами, посторонние символы недопустимы!' : ''} 
+      helperText={validError ? 'Тэги разделяются пробелами, посторонние символы недопустимы!' : ''} 
       variant="standard" 
       placeholder="Тэги" 
       fullWidth 

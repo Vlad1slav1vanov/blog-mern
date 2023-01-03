@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import PostModel from '../models/Post.js';
 
 // TAGS
@@ -41,18 +42,6 @@ export const create = async (req, res) => {
 
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate('user').exec();
-    res.json(posts);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: 'Не удалось получить статьи'
-    });  
-  }
-}
-
-export const getPopulate = async (req, res) => {
-  try {
     const posts = await PostModel.find()
       .populate('user')
       .sort({ createdAt: -1 })
@@ -66,45 +55,73 @@ export const getPopulate = async (req, res) => {
   }
 }
 
-export const getOne = async (req, res) => {
+export const getWithHashtag = async (req, res) => {
   try {
-    const postId = req.params.id;
-    
-    PostModel.findOneAndUpdate(
-    {
-      _id: postId,
-    }, 
-    {
-      $inc: { viewsCount: 1 },
-    },
-    {
-      returnDocument: 'after',
-    },
-    (err, doc) => {
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          message: 'Не удалось вернуть статью'
-        })       
-      };
+    const hashtag = req.params.hashtag;
+    console.log(hashtag);
+    const posts = await PostModel.find({ tags: { $in: [hashtag] } });
+    res.json(posts);
+  } catch (error) {
+    console.log(error); 
+    res.status(500).json({
+      message: 'Посты не найдены'
+    }); 
+  }
+};
 
-      if (!doc) {
-        return res.status(404).json({
-          message: 'Статья не найдена',
-        })
-      };
-
-      res.json(doc);
-    }
-    ).populate('user')
-     .populate('comments.user', 'fullName avatarUrl');
+export const getPopulate = async (req, res) => {
+  try {
+    const posts = await PostModel.find()
+      .populate('user')
+      .sort({ viewsCount: -1 })
+      .exec();
+    res.json(posts);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить статью'
+      message: 'Не удалось получить статьи'
     });  
   }
 }
+
+export const getOne = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    PostModel.findOneAndUpdate(
+      {
+        _id: postId,
+      },
+      {
+        $inc: { viewsCount: 1 },
+      },
+      {
+        returnDocument: 'after',
+      },
+      (err, doc) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            message: 'Не удалось вернуть статью',
+          });
+        }
+
+        if (!doc) {
+          return res.status(404).json({
+            message: 'Статья не найдена',
+          });
+        }
+
+        res.json(doc);
+      },
+    ).populate('user');
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить статьи',
+    });
+  }
+};
 
 export const remove = async (req, res) => {
   try {
