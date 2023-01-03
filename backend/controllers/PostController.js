@@ -78,10 +78,11 @@ export const getOne = async (req, res) => {
           message: 'Статья не найдена',
         })
       };
- 
+
       res.json(doc);
     }
-    ).populate('user');
+    ).populate('user')
+     .populate('comments.user', 'fullName avatarUrl');
   } catch (err) {
     console.log(err);
     res.status(500).json({
