@@ -9,7 +9,6 @@ import Avatar from '@mui/material/Avatar';
 import { fetchRegister, selectIsAuth } from "../../redux/slices/auth";
 import { Navigate } from 'react-router-dom';
 import axios from '../../axios';
-
 import styles from './Login.module.scss';
 
 export const Registration = () => {
@@ -115,6 +114,7 @@ export const Registration = () => {
         <TextField 
         className={styles.field} 
         label="Пароль"
+        type='password'
         error={Boolean(errors.password?.message)}
         helperText={errors.password?.message}
         {...register('password', {required: 'Укажите пароль'})}
