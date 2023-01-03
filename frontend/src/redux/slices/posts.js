@@ -11,12 +11,15 @@ export const fetchPopulatePosts = createAsyncThunk('posts/fetchPopulatePosts', a
   return response.data;
 });
 
+export const fetchHashtagPosts = createAsyncThunk('posts/fetchHashtagPosts', async (hashtag) => {
+  const response = await axios.get(`/posts/hashtag/${hashtag}`);
+  return response.data;
+});
+
 export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
   const response = await axios.get('/tags');
   return response.data;
 })
-
-
 
 export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (id) => 
   axios.delete(`/posts/${id}`)
@@ -60,6 +63,18 @@ const postsSlice = createSlice({
       state.posts.status = 'loaded';
     },
     [fetchPopulatePosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'error';
+    },
+    [fetchHashtagPosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'loading';
+    },
+    [fetchHashtagPosts.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = 'loaded';
+    },
+    [fetchHashtagPosts.rejected]: (state) => {
       state.posts.items = [];
       state.posts.status = 'error';
     },

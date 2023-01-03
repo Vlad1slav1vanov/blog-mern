@@ -9,16 +9,20 @@ import ListItemText from "@mui/material/ListItemText";
 import Skeleton from "@mui/material/Skeleton";
 
 import { SideBlock } from "./SideBlock";
+import { useDispatch } from 'react-redux';
+import { fetchHashtagPosts } from '../redux/slices/posts';
 
 export const TagsBlock = ({ items, isLoading = true }) => {
+  const dispatch = useDispatch();
+
   return (
     <SideBlock title="Тэги">
       <List>
         {(isLoading ? [...Array(5)] : items).map((name, i) => (
-          <a
+          <div
             key={i}
             style={{ textDecoration: "none", color: "black" }}
-            href={`/tags/${name}`}
+            onClick={() => dispatch(fetchHashtagPosts(name))}
           >
             <ListItem key={i} disablePadding>
               <ListItemButton>
@@ -32,7 +36,7 @@ export const TagsBlock = ({ items, isLoading = true }) => {
                 )}
               </ListItemButton>
             </ListItem>
-          </a>
+          </div>
         ))}
       </List>
     </SideBlock>

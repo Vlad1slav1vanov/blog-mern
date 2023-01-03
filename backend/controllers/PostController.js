@@ -58,8 +58,8 @@ export const getAll = async (req, res) => {
 export const getWithHashtag = async (req, res) => {
   try {
     const hashtag = req.params.hashtag;
-    console.log(hashtag);
-    const posts = await PostModel.find({ tags: { $in: [hashtag] } });
+    const posts = await PostModel.find({ tags: { $in: [hashtag] } })
+      .populate('user', 'fullName avatarUrl');
     res.json(posts);
   } catch (error) {
     console.log(error); 
