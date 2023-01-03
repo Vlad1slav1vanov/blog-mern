@@ -51,6 +51,21 @@ export const getAll = async (req, res) => {
   }
 }
 
+export const getPopulate = async (req, res) => {
+  try {
+    const posts = await PostModel.find()
+      .populate('user')
+      .sort({ createdAt: -1 })
+      .exec();
+    res.json(posts);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось получить статьи'
+    });  
+  }
+}
+
 export const getOne = async (req, res) => {
   try {
     const postId = req.params.id;

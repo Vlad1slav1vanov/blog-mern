@@ -6,6 +6,11 @@ export const fetchPosts = createAsyncThunk('posts/fetchPosts', async () => {
   return response.data;
 });
 
+export const fetchPopulatePosts = createAsyncThunk('posts/fetchPopulatePosts', async () => {
+  const response = await axios.get('/posts/populate');
+  return response.data;
+});
+
 export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
   const response = await axios.get('/tags');
   return response.data;
@@ -14,8 +19,6 @@ export const fetchTags = createAsyncThunk('posts/fetchTags', async () => {
 export const fetchRemovePost = createAsyncThunk('posts/fetchRemovePost', async (id) => 
   axios.delete(`/posts/${id}`)
 );
-
-
 
 const initialState = {
   posts: {
@@ -43,6 +46,18 @@ const postsSlice = createSlice({
       state.posts.status = 'loaded';
     },
     [fetchPosts.rejected]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'error';
+    },
+    [fetchPopulatePosts.pending]: (state) => {
+      state.posts.items = [];
+      state.posts.status = 'loading';
+    },
+    [fetchPopulatePosts.fulfilled]: (state, action) => {
+      state.posts.items = action.payload;
+      state.posts.status = 'loaded';
+    },
+    [fetchPopulatePosts.rejected]: (state) => {
       state.posts.items = [];
       state.posts.status = 'error';
     },

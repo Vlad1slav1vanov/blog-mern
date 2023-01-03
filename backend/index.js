@@ -52,6 +52,7 @@ app.post('/upload/avatar', upload.single('image'), (req, res) => {
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
 app.get('/posts', PostController.getAll);
+app.get('/posts/populate', PostController.getPopulate);
 app.get('/posts/:id', PostController.getOne);
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create);
 app.delete('/posts/:id', checkAuth, PostController.remove);

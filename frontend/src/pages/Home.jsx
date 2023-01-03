@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Post } from '../components/Post';
 import { TagsBlock } from '../components/TagsBlock';
 import { CommentsBlock } from '../components/CommentsBlock';
-import { fetchPosts, fetchTags } from '../redux/slices/posts';
+import { fetchPosts, fetchTags, fetchPopulatePosts } from '../redux/slices/posts';
 import axios from '../axios';
 import dayjs from 'dayjs';
 
@@ -17,8 +17,18 @@ export const Home = () => {
   const isPostsLoading = posts.status === 'loading';
   const items = isPostsLoading ? [...Array(5)] : posts.items;
   const [comments, setComments] = React.useState([])
-
   const isTagsLoading = tags.status === 'loading';
+  const [tab, setTab] = React.useState(0);
+
+  const getNewPosts = () => {
+    setTab(0);
+    dispatch(fetchPosts());
+  };
+
+  const getPopulatePosts = () => {
+    setTab(1);
+    dispatch(fetchPosts())
+  };
 
   const getComments = async () => {
     try {
@@ -27,19 +37,19 @@ export const Home = () => {
     } catch (err) {
       alert('Не удалось загрузить список комментариев')
     }
-  }
+  };
 
   React.useEffect(() => {
     dispatch(fetchPosts())
     dispatch(fetchTags())
     getComments()
-  }, [])
+  }, []);
 
   return (
     <>
-      <Tabs style={{ marginBottom: 15 }} value={0} aria-label="basic tabs example">
-        <Tab label="Новые" />
-        <Tab label="Популярные" />
+      <Tabs style={{ marginBottom: 15 }} value={tab}>
+        <Tab onClick={getNewPosts} label="Новые" />
+        <Tab onClick={getPopulatePosts} label="Популярные" />
       </Tabs>
       <Grid container spacing={4}>
       <Grid xs={8} item>
