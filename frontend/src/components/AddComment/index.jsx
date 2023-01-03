@@ -7,20 +7,21 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import axios from "../../axios";
 
-export const Index = ({postId, getComments, userData}) => {
+export const Index = ({postId, userData, getPost}) => {
   const [comment, setComment] = React.useState('');
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     try {
-      const text = {text: comment};
-      axios.post(`/${postId}/comments`, text);   
+      const reqBody = {
+        text: comment
+      }
+      await axios.patch(`/${postId}/comments`, reqBody);
+      getPost();
       setComment('');
-      getComments();
     } catch (err) {
-      console.warn(err);
-      alert('Ошибка при создании комментария!');
+      console.warn('Не удалось опубликовать комментарий')
     }
-  }
+  };
 
   return (
     <>

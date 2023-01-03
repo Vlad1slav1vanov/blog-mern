@@ -55,6 +55,7 @@ export const Home = () => {
               user={obj.user}
               createdAt={dayjs(obj.createdAt).format('DD.MM.YY, HH:mm')}
               viewsCount={obj.viewsCount}
+              commentsCount={obj.commentsCount}
               tags={obj.tags}
               isEditable={userData?._id === obj.user._id}
             />

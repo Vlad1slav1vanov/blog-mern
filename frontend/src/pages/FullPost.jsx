@@ -12,20 +12,9 @@ import dayjs from "dayjs";
 
 export const FullPost = () => {
   const [data, setData] = React.useState();
-  const [comments, setComments] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const userData = useSelector((state) => state.auth.data);
   const {id} = useParams();
-
-  const getComments = async () => {
-    try {
-      const response = await axios.get(`/${id}/comments`);
-      setComments([...response.data.data]);
-    } catch (err) {
-      console.warn(err);
-      alert('Ошибка при получении комментариев');
-    }
-  };
 
   const getFullPost = async () => {
     try {
@@ -34,13 +23,12 @@ export const FullPost = () => {
       setIsLoading(false);
     } catch(err) {
       console.warn(err);
-      alert('Ошибка при получении статьи');
+      alert('Ошибка при получении поста');
     }
   };
 
   React.useEffect(() => {
     getFullPost()
-    getComments()
   }, [])
 
   if (isLoading) {
@@ -66,13 +54,13 @@ export const FullPost = () => {
       />
       </Post>
       <CommentsBlock
-        items={comments}
-        isLoading={false}
+        items={data.comments}
+        isLoading={isLoading}
       >
         <Index 
-        postId={id} 
-        getComments={getComments}
-        userData={userData} 
+        postId={id}
+        userData={userData}
+        getPost={getFullPost}
         />
       </CommentsBlock>
     </>
