@@ -58,6 +58,7 @@ app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
 app.patch('/:postId/comments', checkAuth, PostController.createComment);
+app.get('/comments', PostController.getAllComments);
 
 app.listen(9000, (err) => {
   if (err) {

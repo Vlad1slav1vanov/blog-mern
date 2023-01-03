@@ -187,3 +187,17 @@ export const createComment = async (req, res) => {
     })
   }
 }
+
+export const getAllComments = async (req, res) => {
+  try {
+    const posts = await PostModel.find().populate('comments.user', 'fullName avatarUrl');
+    const allComments = posts.flatMap((post) => post.comments);
+    res.status(200).json({
+      data: allComments,
+    })
+  } catch (err) {
+    res.status(404).json({
+      message: "Комментарии не найдены"
+    })
+  }
+}
