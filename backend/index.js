@@ -62,7 +62,7 @@ app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors,
 app.patch('/:postId/comments', checkAuth, PostController.createComment);
 app.get('/comments', PostController.getAllComments);
 
-app.listen(9000, (err) => {
+app.listen(process.env.PORT || 9000, (err) => {
   if (err) {
     return console.log(err);
   }
