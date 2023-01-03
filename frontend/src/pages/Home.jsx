@@ -22,7 +22,7 @@ export const Home = () => {
 
   const getComments = async () => {
     try {
-      const response = await (await axios.get('/comments')).data.data
+      const response = (await axios.get('/comments')).data.data
       setComments(response)
     } catch (err) {
       alert('Не удалось загрузить список комментариев')
@@ -55,7 +55,6 @@ export const Home = () => {
               user={obj.user}
               createdAt={dayjs(obj.createdAt).format('DD.MM.YY, HH:mm')}
               viewsCount={obj.viewsCount}
-              commentsCount={obj.commentsCount}
               tags={obj.tags}
               isEditable={userData?._id === obj.user._id}
             />

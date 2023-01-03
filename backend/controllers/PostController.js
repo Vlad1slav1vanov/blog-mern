@@ -1,5 +1,7 @@
 import PostModel from '../models/Post.js';
 
+// TAGS
+
 export const getLastTags = async (req, res) => {
   try {
     const posts = await PostModel.find().limit(5).exec();
@@ -13,6 +15,8 @@ export const getLastTags = async (req, res) => {
     });  
   }
 }
+
+// POSTS
 
 export const create = async (req, res) => {
   try {
@@ -144,5 +148,41 @@ export const update = async (req, res) => {
     res.status(500).json({
       message: 'Не удалось обновить статью'
     });
+  }
+}
+
+// COMMENTS
+
+export const createComment = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    const userId = req.userId;
+    const text = req.body.text;
+
+    const result = await PostModel.updateOne(
+      { _id: postId },
+      {
+        $push: {
+          comments: {
+            user: userId,
+            text: text,
+            timestamps: Date.now(),
+          },
+        },
+        $inc: {
+          commentsCount: 1,
+        },
+      },
+    );
+        
+    res.status(200).json({
+      success: true,
+      message: "Комментарий опубликован",
+    })
+  } catch (err) {
+    res.status(404).json({
+      success: false,
+      message: 'Пост не найден'
+    })
   }
 }

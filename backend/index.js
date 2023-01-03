@@ -4,7 +4,7 @@ import multer from 'multer';
 import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
-import {UserController, PostController, CommentController} from './controllers/index.js';
+import {UserController, PostController} from './controllers/index.js';
 import {checkAuth, handleValidationErrors} from './utils/index.js';
 
 mongoose
@@ -57,10 +57,7 @@ app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, Post
 app.delete('/posts/:id', checkAuth, PostController.remove);
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValidationErrors, PostController.update);
 
-app.post('/:postId/comments', checkAuth, CommentController.create);
-app.get('/:postId/comments', CommentController.getOnePost);
-app.get('/comments', CommentController.getAll);
-
+app.patch('/:postId/comments', checkAuth, PostController.createComment);
 
 app.listen(9000, (err) => {
   if (err) {
