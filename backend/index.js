@@ -1,6 +1,7 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
+import process from 'process';
 import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
