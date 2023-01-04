@@ -114,7 +114,7 @@ export const getOne = async (req, res) => {
 
         res.json(doc);
       },
-    ).populate('user');
+    ).populate('comments.user', 'avatarUrl fullName');
   } catch (err) {
     console.log(err);
     res.status(500).json({
