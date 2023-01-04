@@ -61,7 +61,7 @@ export const Home = () => {
               key={obj._id}
               id={obj._id}
               title={obj.title}
-              imageUrl={obj.imageUrl ? `http://localhost:9000${obj.imageUrl}` : ''}
+              imageUrl={obj.imageUrl ? `https://blog-backend-fkzj.onrender.com${obj.imageUrl}` : ''}
               user={obj.user}
               createdAt={dayjs(obj.createdAt).format('DD.MM.YY, HH:mm')}
               viewsCount={obj.viewsCount}
