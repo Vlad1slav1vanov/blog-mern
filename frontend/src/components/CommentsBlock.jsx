@@ -20,7 +20,7 @@ export const CommentsBlock = ({ items, children, isLoading }) => {
                 {isLoading ? (
                   <Skeleton variant="circular" width={40} height={40} />
                 ) : (
-                  <Avatar alt={obj.user.fullName} src={`https://blog-backend-fkzj.onrender.com${obj.user.avatarUrl}`} />
+                  <Avatar alt={obj.user.fullName} src={obj.user.avatarUrl} />
                 )}
               </ListItemAvatar>
               {isLoading ? (

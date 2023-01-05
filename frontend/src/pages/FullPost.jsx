@@ -42,7 +42,7 @@ export const FullPost = () => {
       <Post
         id={data.id}
         title={data.title}
-        imageUrl={data.imageUrl ? `https://blog-backend-fkzj.onrender.com${data.imageUrl}` : ''}
+        imageUrl={data.imageUrl ? data.imageUrl : ''}
         user={data.user}
         createdAt={dayjs(data.createdAt).format('DD.MM.YY, HH:mm')}
         viewsCount={data.viewsCount}

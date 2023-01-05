@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import process from 'process';
+import cloudinary from 'cloudinary';
 import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
@@ -15,19 +16,25 @@ mongoose
 
 const app = express();
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    if (!fs.existsSync('uploads')) {
-      fs.mkdirSync('uploads');
-    }
-    cb(null, 'uploads');
-  },
-  filename: (_, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (_, __, cb) => {
+//     if (!fs.existsSync('uploads')) {
+//       fs.mkdirSync('uploads');
+//     }
+//     cb(null, 'uploads');
+//   },
+//   filename: (_, file, cb) => {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({storage});
+// const upload = multer({storage});
+
+cloudinary.config({ 
+  cloud_name: 'dq99jqkjr', 
+  api_key: '145511759135425', 
+  api_secret: 'vGmP5b8v0NDbsY2FVQl-whwJYL0' 
+});
 
 app.use(express.json())
 app.use('/uploads', express.static('uploads'))
@@ -39,15 +46,37 @@ app.post('/auth/register', registerValidation, handleValidationErrors, UserContr
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.get('/users/:id', UserController.getMe);
 
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
+// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+//   res.json({
+//     url: `/uploads/${req.file.originalname}`,
+//   });
+// });
+
+// app.post('/upload/avatar', upload.single('image'), (req, res) => {
+//   res.json({
+//     url: `/uploads/${req.file.originalname}`,
+//   });
+// });
+
+app.post('/upload', checkAuth, (req, res) => {
+  cloudinary.uploader.upload(req.file.path, function(error, result) {
+    if (error) {
+      return res.status(500).send(error);
+    }
+    res.json({
+      url: result.secure_url,
+    });
   });
 });
 
-app.post('/upload/avatar', upload.single('image'), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
+app.post('/upload/avatar', (req, res) => {
+  cloudinary.uploader.upload(req.file.path, function(error, result) {
+    if (error) {
+      return res.status(500).send(error);
+    }
+    res.json({
+      url: result.secure_url,
+    });
   });
 });
 

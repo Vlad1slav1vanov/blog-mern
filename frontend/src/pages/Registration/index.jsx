@@ -69,7 +69,7 @@ export const Registration = () => {
       </Typography>
       <div className={styles.avatar}>
         <Avatar
-        src={imageUrl && `https://blog-backend-fkzj.onrender.com${imageUrl}`}
+        src={imageUrl}
         sx={{ width: 100, height: 100 }} 
         />
         <input

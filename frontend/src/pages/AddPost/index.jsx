@@ -148,7 +148,7 @@ export const AddPost = () => {
           </Button>
           <img 
           className={styles.image} 
-          src={`https://blog-backend-fkzj.onrender.com${imageUrl}`} 
+          src={imageUrl} 
           alt="Uploaded" 
           />
         </>
