@@ -59,7 +59,7 @@ app.get('/users/:id', UserController.getMe);
 //   });
 // });
 
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+app.post('/upload', checkAuth, (req, res) => {
   if (!req.file) {
     return res.status(400).send({ error: 'No file was uploaded' });
   }
@@ -73,7 +73,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
   });
 });
 
-app.post('/upload/avatar', upload.single('image'), (req, res) => {
+app.post('/upload/avatar', (req, res) => {
   if (!req.file) {
     return res.status(400).send({ error: 'No file was uploaded' });
   }
@@ -86,6 +86,7 @@ app.post('/upload/avatar', upload.single('image'), (req, res) => {
     });
   });
 });
+
 
 
 
