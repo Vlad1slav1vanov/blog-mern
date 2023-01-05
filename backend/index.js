@@ -16,20 +16,19 @@ mongoose
 
 const app = express();
 
-// const storage = multer.diskStorage({
-//   destination: (_, __, cb) => {
-//     if (!fs.existsSync('uploads')) {
-//       fs.mkdirSync('uploads');
-//     }
-//     cb(null, 'uploads');
-//   },
-//   filename: (_, file, cb) => {
-//     cb(null, file.originalname);
-//   },
-// });
+const storage = multer.diskStorage({
+  destination: (_, __, cb) => {
+    if (!fs.existsSync('uploads')) {
+      fs.mkdirSync('uploads');
+    }
+    cb(null, 'uploads');
+  },
+  filename: (_, file, cb) => {
+    cb(null, file.originalname);
+  },
+});
 
-const storage = multer.memoryStorage()
-const upload = multer({storage});
+const upload = multer({ storage });
 
 cloudinary.config({ 
   cloud_name: 'dq99jqkjr', 
@@ -47,48 +46,17 @@ app.post('/auth/register', registerValidation, handleValidationErrors, UserContr
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.get('/users/:id', UserController.getMe);
 
-// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
-// });
-
-// app.post('/upload/avatar', upload.single('image'), (req, res) => {
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
-// });
-
-app.post('/upload', checkAuth, (req, res) => {
-  if (!req.image) {
-    return res.status(400).send({ error: 'No file was uploaded' });
-  }
-  cloudinary.v2.uploader.upload(req.image.buffer.toString(), function(error, result) {
-    if (error) {
-      return res.status(500).send(error);
-    }
-    res.json({
-      url: result.secure_url,
-    });
+app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
   });
 });
 
-app.post('/upload/avatar', (req, res) => {
-  if (!req.image) {
-    return res.status(400).send({ error: 'No file was uploaded' });
-  }
-  cloudinary.v2.uploader.upload(req.image.buffer.toString(), function(error, result) {
-    if (error) {
-      return res.status(500).send(error);
-    }
-    res.json({
-      url: result.secure_url,
-    });
+app.post('/upload/avatar', upload.single('image'), (req, res) => {
+  res.json({
+    url: `/uploads/${req.file.originalname}`,
   });
 });
-
-
-
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
