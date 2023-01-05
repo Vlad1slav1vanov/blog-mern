@@ -47,7 +47,7 @@ export const Registration = () => {
   });
 
   const onSubmit = async (values) => {
-    const data = await dispatch(fetchRegister({...values, avatarUrl: imageUrl}));
+    const data = dispatch(fetchRegister({...values, avatarUrl: imageUrl}));
 
     if (!data.payload) {
       alert('Не удалось зарегистрироваться')
