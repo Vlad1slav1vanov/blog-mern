@@ -60,6 +60,9 @@ app.get('/users/:id', UserController.getMe);
 // });
 
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ error: 'No file was uploaded' });
+  }
   cloudinary.uploader.upload(req.file.buffer, function(error, result) {
     if (error) {
       return res.status(500).send(error);
@@ -71,6 +74,9 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 });
 
 app.post('/upload/avatar', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send({ error: 'No file was uploaded' });
+  }
   cloudinary.uploader.upload(req.file.buffer, function(error, result) {
     if (error) {
       return res.status(500).send(error);
@@ -80,6 +86,7 @@ app.post('/upload/avatar', upload.single('image'), (req, res) => {
     });
   });
 });
+
 
 
 app.get('/tags', PostController.getLastTags);
