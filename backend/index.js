@@ -28,7 +28,8 @@ const app = express();
 //   },
 // });
 
-const upload = multer({});
+const storage = multer.memoryStorage()
+const upload = multer({storage});
 
 cloudinary.config({ 
   cloud_name: 'dq99jqkjr', 
@@ -58,9 +59,8 @@ app.get('/users/:id', UserController.getMe);
 //   });
 // });
 
-
 app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-  cloudinary.uploader.upload(req.file.path, function(error, result) {
+  cloudinary.uploader.upload(req.file.buffer, function(error, result) {
     if (error) {
       return res.status(500).send(error);
     }
@@ -71,7 +71,7 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
 });
 
 app.post('/upload/avatar', upload.single('image'), (req, res) => {
-  cloudinary.uploader.upload(req.file.path, function(error, result) {
+  cloudinary.uploader.upload(req.file.buffer, function(error, result) {
     if (error) {
       return res.status(500).send(error);
     }
@@ -80,6 +80,7 @@ app.post('/upload/avatar', upload.single('image'), (req, res) => {
     });
   });
 });
+
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
