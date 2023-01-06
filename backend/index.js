@@ -2,13 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import process from 'process';
-import fs from 'fs';
 import cors from 'cors';
-import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
-import {UserController, PostController} from './controllers/index.js';
-import {checkAuth, handleValidationErrors} from './utils/index.js';
-import streamifier from 'streamifier';
 import cloudinary from 'cloudinary';
+import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
+import {UserController, PostController, UploadController} from './controllers/index.js';
+import {checkAuth, handleValidationErrors} from './utils/index.js';
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -17,26 +15,12 @@ mongoose
 
 const app = express();
 
-// const storage = multer.diskStorage({
-//   destination: (_, __, cb) => {
-//     if (!fs.existsSync('uploads')) {
-//       fs.mkdirSync('uploads');
-//     }
-//     cb(null, 'uploads');
-//   },
-//   filename: (_, file, cb) => {
-//     cb(null, file.originalname);
-//   },
-// });
-
-// const upload = multer({ storage });
-
 const fileUpload = multer()
 
 cloudinary.config({ 
-  cloud_name: 'dq99jqkjr', 
-  api_key: '145511759135425', 
-  api_secret: 'vGmP5b8v0NDbsY2FVQl-whwJYL0' 
+  cloud_name: process.env.CLOUD_KEY, 
+  api_key: process.env.API_KEY, 
+  api_secret: process.env.API_SECRET,
 });
 
 app.use(express.json())
@@ -49,83 +33,8 @@ app.post('/auth/register', registerValidation, handleValidationErrors, UserContr
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.get('/users/:id', UserController.getMe);
 
-// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
-// });
-
-// app.post('/upload/avatar', upload.single('image'), (req, res) => {
-//   res.json({
-//     url: `/uploads/${req.file.originalname}`,
-//   });
-// });
-
-app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next) {
-  let streamUpload = (req) => {
-      return new Promise((resolve, reject) => {
-          let stream = cloudinary.v2.uploader.upload_stream(
-            (error, result) => {
-              if (result) {
-                resolve(result);
-              } else {
-                reject(error);
-              }
-            }
-          );
-
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-  };
-
-  const upload = async (req) => {
-    try {
-      let result = await streamUpload(req);
-      console.log(result);
-      res.status(200).json({
-        url: result.secure_url
-      });
-    } catch (error) {
-      res.status(500).json(error.message);
-    }
-  }
-
-  upload(req);
-});
-
-app.post('/upload', checkAuth, fileUpload.single('image'), function (req, res, next) {
-  let streamUpload = (req) => {
-      return new Promise((resolve, reject) => {
-          let stream = cloudinary.v2.uploader.upload_stream(
-            (error, result) => {
-              if (result) {
-                resolve(result);
-              } else {
-                reject(error);
-              }
-            }
-          );
-
-        streamifier.createReadStream(req.file.buffer).pipe(stream);
-      });
-  };
-
-  const upload = async (req) => {
-    try {
-      let result = await streamUpload(req);
-      console.log(result);
-      res.status(200).json({
-        imageUrl: result.secure_url
-      });
-    } catch (error) {
-      res.status(500).json(error.message);
-    }
-  }
-
-  upload(req);
-});
-
-
+app.post('/upload/avatar', fileUpload.single('image'), UploadController.uploadImage);
+app.post('/upload', checkAuth, fileUpload.single('image'), UploadController.uploadImage);
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
