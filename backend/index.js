@@ -83,7 +83,7 @@ app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next)
       let result = await streamUpload(req);
       console.log(result);
       res.status(200).json({
-        imageUrl: result.secure_url
+        url: result.secure_url
       });
     } catch (error) {
       res.status(500).json(error.message);
@@ -115,7 +115,7 @@ app.post('/upload', checkAuth, fileUpload.single('image'), function (req, res, n
       let result = await streamUpload(req);
       console.log(result);
       res.status(200).json({
-        url: result.secure_url
+        imageUrl: result.secure_url
       });
     } catch (error) {
       res.status(500).json(error.message);
