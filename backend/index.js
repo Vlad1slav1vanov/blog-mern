@@ -31,7 +31,7 @@ const app = express();
 
 // const upload = multer({ storage });
 
-const upload = multer()
+const fileUpload = multer()
 
 cloudinary.config({ 
   cloud_name: 'dq99jqkjr', 
