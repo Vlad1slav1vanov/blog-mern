@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import process from 'process';
 import cloudinary from 'cloudinary';
+import streamifier from 'streamifier';
 import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
@@ -16,19 +17,21 @@ mongoose
 
 const app = express();
 
-const storage = multer.diskStorage({
-  destination: (_, __, cb) => {
-    if (!fs.existsSync('uploads')) {
-      fs.mkdirSync('uploads');
-    }
-    cb(null, 'uploads');
-  },
-  filename: (_, file, cb) => {
-    cb(null, file.originalname);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (_, __, cb) => {
+//     if (!fs.existsSync('uploads')) {
+//       fs.mkdirSync('uploads');
+//     }
+//     cb(null, 'uploads');
+//   },
+//   filename: (_, file, cb) => {
+//     cb(null, file.originalname);
+//   },
+// });
 
-const upload = multer({ storage });
+// const upload = multer({ storage });
+
+const upload = multer()
 
 cloudinary.config({ 
   cloud_name: 'dq99jqkjr', 
@@ -46,17 +49,71 @@ app.post('/auth/register', registerValidation, handleValidationErrors, UserContr
 app.get('/auth/me', checkAuth, UserController.getMe);
 app.get('/users/:id', UserController.getMe);
 
-app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
-  });
+// app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
+//   res.json({
+//     url: `/uploads/${req.file.originalname}`,
+//   });
+// });
+
+// app.post('/upload/avatar', upload.single('image'), (req, res) => {
+//   res.json({
+//     url: `/uploads/${req.file.originalname}`,
+//   });
+// });
+
+app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next) {
+  let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+          let stream = cloudinary.uploader.upload_stream(
+            (error, result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
+            }
+          );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+  };
+
+  async function upload(req) {
+      let result = await streamUpload(req);
+      console.log(result);
+      res.status(200).json(result.secure_url);
+  }
+
+  upload(req);
 });
 
-app.post('/upload/avatar', upload.single('image'), (req, res) => {
-  res.json({
-    url: `/uploads/${req.file.originalname}`,
-  });
+app.post('/upload', checkAuth, fileUpload.single('image'), function (req, res, next) {
+  let streamUpload = (req) => {
+      return new Promise((resolve, reject) => {
+          let stream = cloudinary.uploader.upload_stream(
+            (error, result) => {
+              if (result) {
+                resolve(result);
+              } else {
+                reject(error);
+              }
+            }
+          );
+
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+  };
+
+  async function upload(req) {
+      let result = await streamUpload(req);
+      console.log(result);
+      res.status(200).json(result.secure_url);
+  }
+
+  upload(req);
 });
+
+
 
 app.get('/tags', PostController.getLastTags);
 app.get('/posts/tags', PostController.getLastTags);
