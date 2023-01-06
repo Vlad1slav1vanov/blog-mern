@@ -78,10 +78,14 @@ app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next)
       });
   };
 
-  async function upload(req) {
+  const upload = async (req) => {
+    try {
       let result = await streamUpload(req);
       console.log(result);
       res.status(200).json(result.secure_url);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   }
 
   upload(req);
@@ -104,10 +108,14 @@ app.post('/upload', checkAuth, fileUpload.single('image'), function (req, res, n
       });
   };
 
-  async function upload(req) {
+  const upload = async (req) => {
+    try {
       let result = await streamUpload(req);
       console.log(result);
       res.status(200).json(result.secure_url);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   }
 
   upload(req);
