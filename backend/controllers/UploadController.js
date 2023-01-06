@@ -26,7 +26,7 @@ export const uploadImage = (req, res) => {
         url: result.secure_url
       });
     } catch (error) {
-      res.status(500).json(error.message);
+      res.status(500).json(error);
     }
   }
 
