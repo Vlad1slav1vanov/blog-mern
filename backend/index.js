@@ -2,13 +2,13 @@ import express from 'express';
 import mongoose from 'mongoose';
 import multer from 'multer';
 import process from 'process';
-import cloudinary from 'cloudinary';
-import streamifier from 'streamifier';
 import fs from 'fs';
 import cors from 'cors';
 import {registerValidation, loginValidation, postCreateValidation} from './validations.js';
 import {UserController, PostController} from './controllers/index.js';
 import {checkAuth, handleValidationErrors} from './utils/index.js';
+import streamifier from 'streamifier';
+import cloudinary from 'cloudinary';
 
 mongoose
   .connect(process.env.MONGODB_URI)
@@ -64,7 +64,7 @@ app.get('/users/:id', UserController.getMe);
 app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next) {
   let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
-          let stream = cloudinary.uploader.upload_stream(
+          let stream = cloudinary.v2.uploader.upload_stream(
             (error, result) => {
               if (result) {
                 resolve(result);
@@ -94,7 +94,7 @@ app.post('/upload/avatar', fileUpload.single('image'), function (req, res, next)
 app.post('/upload', checkAuth, fileUpload.single('image'), function (req, res, next) {
   let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
-          let stream = cloudinary.uploader.upload_stream(
+          let stream = cloudinary.v2.uploader.upload_stream(
             (error, result) => {
               if (result) {
                 resolve(result);
