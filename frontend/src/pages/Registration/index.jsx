@@ -46,7 +46,7 @@ export const Registration = () => {
     mode: 'onChange',
   });
 
-  const onSubmit = async (values) => {
+  const onSubmit = (values) => {
     const data = dispatch(fetchRegister({...values, avatarUrl: imageUrl}));
 
     if (!data.payload) {
